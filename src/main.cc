@@ -96,7 +96,7 @@ Handle<Value> convert_blob(const Arguments& args) {
     if (!parse_and_validate_block_from_blob(input, b))
         return except("Failed to parse block");
 
-    if (b.major_version < BLOCK_MAJOR_VERSION_2) {
+    if (b.major_version < BLOCK_MAJOR_VERSION_2 || b.major_version >= BLOCK_MAJOR_VERSION_5) {
         if (!get_block_hashing_blob(b, output))
             return except("Failed to create mining block");
     } else {
@@ -163,7 +163,7 @@ Handle<Value> construct_block_blob(const Arguments& args) {
         return except("Failed to parse block");
 
     b.nonce = nonce;
-    if (b.major_version >= BLOCK_MAJOR_VERSION_2) {
+    if (b.major_version >= BLOCK_MAJOR_VERSION_2 && b.major_version < BLOCK_MAJOR_VERSION_5) {
         block parent_block;
         b.parent_block.nonce = nonce;
         if (!construct_parent_block(b, parent_block))
